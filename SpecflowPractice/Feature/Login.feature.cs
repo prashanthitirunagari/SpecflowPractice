@@ -119,7 +119,7 @@ this.ScenarioInitialize(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 20
- testRunner.When("user enter \"prashanthi.tirunagaris@gmail.com\" and \"Training@123\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("user enter prashanthi.tirunagaris@gmail.com and Training@123", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 21
  testRunner.And("user click on Submit button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -170,7 +170,7 @@ this.ScenarioInitialize(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 29
- testRunner.When("user enter \"jajshd@gmail.com\" and \"tesst123\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("user enter jajshd@gmail.com and tesst123", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 30
  testRunner.And("user click on Submit button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
