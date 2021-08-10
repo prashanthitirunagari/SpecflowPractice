@@ -63,3 +63,4 @@ stages:
                   testAssemblyVer2: |
                     $(Agent.BuildDirectory)/**/*SpecflowPractice.dll
                     !$(Agent.BuildDirectory)/**/obj/**
+                    !**/ref/**
