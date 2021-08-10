@@ -9,7 +9,7 @@ trigger:
 stages: 
   - stage: Build
 
-    pool: NHSX
+    pool: PC
 
     variables:
       buildConfiguration: 'Release'
