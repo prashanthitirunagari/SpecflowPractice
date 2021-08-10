@@ -1,28 +1,65 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
-trigger:
-- main
-
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  
+trigger:
+- main
 
-steps:
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+stages: 
+  - stage: Build
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    pool: NHSX
+
+    variables:
+      buildConfiguration: 'Release'
+
+    jobs:
+    - job: Build
+      steps:
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: '**/*.csproj'
+          noCache: true
+          
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          command: build
+          projects: '**/*.csproj'
+          arguments: '--configuration $(buildConfiguration)'
+          
+      - task: CopyFiles@2
+        displayName: 'Copy files to directory'
+        condition: always()
+        inputs:
+          SourceFolder: $(Build.SourcesDirectory)
+          Contents: |
+            **/*
+            !.git/**/*
+          TargetFolder: $(Build.ArtifactStagingDirectory)
+                
+
+  - stage: Release
+    pool: PC
+      
+    variables:
+      buildConfiguration: Release
+
+    jobs:
+    - deployment: Release
+      environment: Release
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: VSTest@2
+                displayName: 'Execute Tests'
+                inputs:
+                  testFiltercriteria: 'Category=Sanity'
+                  testSelector: testAssemblies
+                  testAssemblyVer2: |
+                    $(Agent.BuildDirectory)/**/*SpecflowPractice.dll
+                    !$(Agent.BuildDirectory)/**/obj/**
